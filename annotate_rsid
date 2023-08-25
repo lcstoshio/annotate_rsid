@@ -1,0 +1,31 @@
+##########################
+# Script to change from CHR:POS to rsid
+# Last edited in August 17th, 2023
+# Lucas Toshio Ito
+########################## 
+
+### Important Links
+
+# BCFtools Annotate # https://samtools.github.io/bcftools/howtos/annotate.html
+# BCFtools Annotate # https://merrimanlab.github.io/post/2021-09-21-vcf-annotation/
+# BCFtools Annotate # https://www.biostars.org/p/393009/
+# How to install BCFtools # https://www.biostars.org/p/328831/
+# Information about references # https://www.ncbi.nlm.nih.gov/variation/docs/human_variation_vcf/
+
+### Download reference to Hg19 and Hg38
+
+wget -qO- https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/All_20180418.vcf.gz > All_Hg38_20180418.vcf.gz
+wget -qO- https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh38p7/VCF/common_20180418.vcf.gz > common_Hg38_20180418.vcf.gz
+wget -qO- https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh37p13/VCF/All_20180423.vcf.gz > All_Hg19_20180423.vcf.gz
+wget -qO- https://ftp.ncbi.nih.gov/snp/organisms/human_9606_b151_GRCh37p13/VCF/common_all_20180423.vcf.gz > common_all_Hg19_20180423.vcf.gz
+
+### Indexate (index) and split multiallelic sites (norm)
+bcftools index All_Hg19_20180423.vcf.gz
+bcftools norm -m -any All_Hg19_20180423.vcf.gz -Ob -o All_Hg19_20180423_norm.vcf.gz
+bcftools index All_Hg19_20180423_norm.vcf.gz
+
+### Add rsid to VCF file
+bcftools annotate --pair-logic any -a All_Hg19_20180423_norm.vcf.gz -c ID -o file_rsidannotated.vcf.gz file.vcf.gz
+
+### Create Plink files
+../plink --vcf file_rsidannotated.vcf.gz --make-bed --out file_rsidannotated
