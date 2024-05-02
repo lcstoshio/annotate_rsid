@@ -9,5 +9,12 @@ unzip snpEff_latest_core.zip
 
 awk -v OFS='\t' '{print $1, $2, $3, $4}' /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH.txt > /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH_toSnpSift.txt
 
+tabix -p vcf ./common_all_Hg19_20180423.vcf.gz
 
 tail /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH_toSnpSift.txt -n+2 | sort -k1,1V -k2,2g | java -jar /mnt/genetica_2/Lucas/snpEff/SnpSift.jar annotate -id /mnt/genetica_2/Lucas/refs/common_all_Hg19_20180423.vcf.gz > 2023_GWAS_SH_rsid.txt
+
+
+
+
+
+gunzip -c ./All_Hg19_20180423.vcf.gz | convert2bed --input=vcf --output=bed --sort-tmpdir=${PWD} - > ./hg19.snp151.bed
