@@ -3,7 +3,11 @@ https://www.biostars.org/p/306493/
 wget https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
 unzip snpEff_latest_core.zip
 
-# sorting by chromossome and then position
+# sorting by chromosome and then position
 # running the SnpSift to annotate based on dbSNP IDs
-# saving into anothe file
-sort -k1,1V -k2,2g | java -jar /mnt/genetica_2/Lucas/snpEff/SnpSift.jar annotate -id /mnt/genetica_2/Lucas/refs/common_all_Hg19_20180423.vcf.gz > sumstat_annotated.vcf
+# saving into another file
+
+awk -v OFS='\t' '{print $1, $2, $3, $4}' /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH.txt > /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH_toSnpSift.txt
+
+
+tail /mnt/genetica_2/Lucas/snpEff/2023_GWAS_SH_toSnpSift.txt -n+2 | sort -k1,1V -k2,2g | java -jar /mnt/genetica_2/Lucas/snpEff/SnpSift.jar annotate -id /mnt/genetica_2/Lucas/refs/common_all_Hg19_20180423.vcf.gz > 2023_GWAS_SH_rsid.txt
